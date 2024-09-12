@@ -1,0 +1,320 @@
+openapi: 3.1.0
+info:
+  version: 1.0.0-oas3.1
+  title: Education Management System API
+  contact:
+    email: artyom.hayrapetyan0001@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+tags:
+  - name: Users
+    description: Operations about User
+  - name: Tasks
+    description: Operations about Task
+
+paths:
+  
+  #----------------------------------------- user-----------------------------
+
+  /user:
+    post:
+      summary: create User
+      operationId: createUser
+      description: This endpoint create User.
+      tags:
+        - Users
+      requestBody:
+        description: create User  details
+        content:
+          form-data:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lName:
+                  type: string                  
+                email:
+                  type: string
+                Password:
+                  type: string
+
+      responses:
+        "200":
+          description: createUser
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Bad input parameter
+
+    get:
+      summary: gets a list of all users
+      operationId: getUsers
+      description: This endpoint allows you to retrieve all users.
+      tags:
+        - Users
+      responses:
+        "200":
+          description: User details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "404":
+          description: User record not found
+  /user/{id}:
+    get:
+      summary: Gets details of a specific user
+      operationId: getUser
+      description: This endpoint allows you to retrieve detailed information about a specific user.
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          description: Pass an id to find a user
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Bad input parameter
+
+    delete:
+      summary: Delete a user by ID
+      operationId: deleteUserById
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the user
+      responses:
+        "204":
+          description: User deleted
+        "404":
+          description: User not found
+# ------------------------------task-----------------
+  /task:
+    post:
+      summary: create Task
+      operationId: createTask
+      description: This endpoint create Task.
+      tags:
+        - Tasks
+      requestBody:
+        description: create Task  details
+        content:
+          form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string                  
+                dueDate:
+                  type: Date
+                priority:
+                  type: number
+                assignedMember:
+                  type: string
+                  format: uuid
+                status:
+                  type: string 
+
+      responses:
+        "200":
+          description: createTask
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Bad input parameter
+  
+
+    put:
+      summary: Update Task
+      operationId: updateTask
+      description: This endpoint update Task.
+      tags:
+        - Tasks
+      requestBody:
+        description: update Task  details
+        content:
+          form-data:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string 
+
+      responses:
+        "200":
+          description: createTask
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Bad input parameter
+  
+
+
+
+
+
+
+
+
+
+  /task/{id}:
+    get:
+      summary: Gets details of a specific task
+      operationId: getTask
+      description: This endpoint allows you to retrieve detailed information about a specific task.
+      tags:
+        - Tasks
+
+      parameters:
+        - in: path
+          name: id
+          description: Pass an id to find a task
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Task"
+        "400":
+          description: Bad input parameter
+
+    delete:
+      summary: Delete a task by ID
+      operationId: deleteUserById
+      tags:
+        - Tasks
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the task
+      responses:
+        "204":
+          description: Task deleted
+        "404":
+          description: Task not found
+
+  /task/ByAssignedMemberId/{id}:
+    get:
+      summary: Gets details of a specific task by AssignedMemberId
+      operationId: getTask
+      description: This endpoint allows you to retrieve detailed information about a specific AssignedMemberId.
+      tags:
+        - Tasks
+      parameters:
+        - in: path
+          name: id
+          description: Pass an id to find a task
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Task"
+        "400":
+          description: Bad input parameter
+
+
+
+# -------------------------------models----------------------------------
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: uuid
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        
+    
+        # --------------------------Auth---------------------------------
+
+
+  responses:
+    Payment:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                month:
+                  type: string
+                year:
+                  type: string
+                payment:
+                  type: string
+    Authorized:
+      description: Return access token
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: success
+              token:
+                type: string
+                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzODcwZDNlOTBmMTQyMTZlMTRlODM0MyIsImVtYWlsIjoiYmJiQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNjY5OTM0MjQ5LCJleHAiOjE2NzAwMjA2NDl9.DcYGvBipPBfrfTU1UWGQHebakTbwcnd_by9BSQl-AEY
+    UnauthorizedError:
+      description: Access token is missing or invalid, or the user does not have access to perform the action
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Unauthorized
